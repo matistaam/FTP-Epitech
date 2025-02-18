@@ -11,6 +11,11 @@
 #include <stdio.h>
 #include <string.h>
 
+int accept_connection(int server_fd)
+{
+    return (0);
+}
+
 int listen_socket(int sock_fd)
 {
     if (listen(sock_fd, SOMAXCONN) < 0) {

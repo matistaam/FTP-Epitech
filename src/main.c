@@ -29,6 +29,7 @@ int main(int ac, char **av)
     server_fd = create_server_socket();
     if (server_fd == -1)
         return (84);
+    accept_connection(server_fd);
     close(server_fd);
     return (0);
 }

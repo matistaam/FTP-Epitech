@@ -10,6 +10,7 @@
     #define PORT 4242
 
 // File : create_server_socket.c
+int accept_connection(int server_fd);
 int create_server_socket(void);
 
 // File : main.c

@@ -7,6 +7,10 @@
 
 #ifndef MY_H_
     #define MY_H_
+    #define PORT 4242
+
+// File : create_server_socket.c
+int create_server_socket(void);
 
 // File : main.c
 int help(void);

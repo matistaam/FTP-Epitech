@@ -6,6 +6,8 @@
 */
 
 #include "my.h"
+#include <sys/socket.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -20,7 +22,13 @@ int help(void)
 
 int main(int ac, char **av)
 {
+    int server_fd = 0;
+
     if (ac == 2 && strcmp(av[1], "-help") == 0)
         return (help());
+    server_fd = create_server_socket();
+    if (server_fd == -1)
+        return (84);
+    close(server_fd);
     return (0);
 }

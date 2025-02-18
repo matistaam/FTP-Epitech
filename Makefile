@@ -12,7 +12,7 @@ SRC_FILES		=	$(wildcard src/*.c)
 
 OBJ_FILES		=	$(SRC_FILES:.c=.o)
 
-NAME			=	myftp
+NAME			=	server
 
 RM				=	rm -f
 

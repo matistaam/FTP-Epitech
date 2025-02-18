@@ -8,11 +8,26 @@
 #include "my.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 
 int accept_connection(int server_fd)
 {
+    struct sockaddr_in client_addr;
+    socklen_t client_len = sizeof(client_addr);
+    int client_fd = accept(server_fd, (struct sockaddr *)&client_addr,
+    &client_len);
+
+    if (client_fd < 0) {
+        perror("accept");
+        return (-1);
+    }
+    printf("Connection from %s:%d\n", inet_ntoa(client_addr.sin_addr),
+    ntohs(client_addr.sin_port));
+    write(client_fd, "I lost the game :3\n", strlen("I lost the game :3\n"));
+    close(client_fd);
     return (0);
 }
 

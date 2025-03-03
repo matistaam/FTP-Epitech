@@ -5,14 +5,17 @@
 ## Makefile
 ##
 
-CC				=	gcc
-CFLAGS			=	-W -Wall -Wextra -Werror -g3 -I./include
+INCLUDE_DIRS	=	$(shell find include -type d)
+INCLUDE_FLAGS	=	$(addprefix -I, $(INCLUDE_DIRS))
 
-SRC_FILES		=	$(wildcard src/*.c)
+CC				=	gcc
+CFLAGS			=	-W -Wall -Wextra -Werror -g3 $(INCLUDE_FLAGS)
+
+SRC_FILES		=	$(shell find src -name "*.c")
 
 OBJ_FILES		=	$(SRC_FILES:.c=.o)
 
-NAME			=	server
+NAME			=	myftp
 
 RM				=	rm -f
 

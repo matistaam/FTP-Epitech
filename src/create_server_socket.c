@@ -22,6 +22,7 @@ int accept_connection(int server_fd)
 
     if (client_fd < 0) {
         perror("accept");
+        close(server_fd);
         return (-1);
     }
     printf("Connection from %s:%d\n", inet_ntoa(client_addr.sin_addr),
@@ -35,6 +36,7 @@ int listen_socket(int sock_fd)
 {
     if (listen(sock_fd, SOMAXCONN) < 0) {
         perror("listen");
+        close(sock_fd);
         return (-1);
     }
     return (0);
@@ -45,6 +47,7 @@ int bind_socket(int sock_fd, struct sockaddr_in *server_addr)
     if (bind(sock_fd, (struct sockaddr *)server_addr, sizeof(*server_addr))
     < 0) {
         perror("bind");
+        close(sock_fd);
         return (-1);
     }
     return (0);
@@ -56,12 +59,13 @@ int create_socket(void)
 
     if (sock_fd == -1) {
         perror("socket");
+        close(sock_fd);
         return (-1);
     }
     return (sock_fd);
 }
 
-int create_server_socket(void)
+int create_server_socket(int port)
 {
     int sock_fd = create_socket();
     struct sockaddr_in server_addr;
@@ -70,7 +74,7 @@ int create_server_socket(void)
         return (-1);
     memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(PORT);
+    server_addr.sin_port = htons(port);
     server_addr.sin_addr.s_addr = INADDR_ANY;
     if (bind_socket(sock_fd, &server_addr) == -1)
         return (-1);

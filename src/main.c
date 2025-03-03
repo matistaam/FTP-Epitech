@@ -6,10 +6,10 @@
 */
 
 #include "my.h"
-#include <sys/socket.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 int help(void)
 {
@@ -23,13 +23,20 @@ int help(void)
 int main(int ac, char **av)
 {
     int server_fd = 0;
+    int port = 0;
 
     if (ac == 2 && strcmp(av[1], "-help") == 0)
         return (help());
-    server_fd = create_server_socket();
+    port = atoi(av[1]);
+    if (port <= 0) {
+        write(2, "Invalid port number\n", 20);
+        return (84);
+    }
+    server_fd = create_server_socket(port);
     if (server_fd == -1)
         return (84);
-    accept_connection(server_fd);
+    while (1)
+        accept_connection(server_fd);
     close(server_fd);
     return (0);
 }

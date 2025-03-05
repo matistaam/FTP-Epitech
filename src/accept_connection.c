@@ -9,7 +9,7 @@
 
 void cleanup_manager(poll_manager_t *manager)
 {
-    if (!manager)
+    if (manager == NULL)
         return;
     for (size_t i = 1; i < manager->nfds; i++)
         close(manager->fds[i].fd);
@@ -22,7 +22,7 @@ int resize_poll_fds(poll_manager_t *manager)
     size_t new_capacity = manager->capacity + 1;
     struct pollfd *new_fds = NULL;
 
-    if (!manager)
+    if (manager == NULL)
         return (-1);
     new_fds = realloc(manager->fds, sizeof(struct pollfd) * new_capacity);
     if (new_fds == NULL) {
@@ -37,7 +37,7 @@ int resize_poll_fds(poll_manager_t *manager)
 int handle_poll_events(poll_manager_t *manager, int server_fd)
 {
     for (size_t i = 0; i < manager->nfds; i++) {
-        if (!(manager->fds[i].revents & POLLIN))
+        if ((manager->fds[i].revents & POLLIN) == 0)
             continue;
         if (i != 0)
             return (handle_client_data(manager, i));

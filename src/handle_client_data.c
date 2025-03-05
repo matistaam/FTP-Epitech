@@ -21,7 +21,7 @@ int handle_client_data(poll_manager_t *manager, int index)
     if (buffer == NULL)
         return (-1);
     nbytes = read(manager->fds[index].fd, buffer, available);
-    if (nbytes <= 0) {
+    if (nbytes == -1) {
         free(buffer);
         remove_client(manager, index);
         return (-1);
@@ -41,18 +41,16 @@ void remove_client(poll_manager_t *manager, int index)
 
 int add_new_client(poll_manager_t *manager, int server_fd)
 {
-    struct sockaddr_in client_addr;
+    struct sockaddr_in client_addr = {0};
     socklen_t client_len = sizeof(client_addr);
     int client_fd = 0;
 
-    if (resize_poll_fds(manager) == -1) {
+    if (resize_poll_fds(manager) == -1)
         return (-1);
-    }
     client_fd = accept(server_fd, (struct sockaddr *)&client_addr,
     &client_len);
-    if (client_fd == -1) {
+    if (client_fd == -1)
         return (-1);
-    }
     manager->fds[manager->nfds].fd = client_fd;
     manager->fds[manager->nfds].events = POLLIN;
     manager->nfds++;

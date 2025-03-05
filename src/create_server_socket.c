@@ -12,7 +12,7 @@
 
 int listen_socket(int sock_fd)
 {
-    if (listen(sock_fd, SOMAXCONN) < 0) {
+    if (listen(sock_fd, SOMAXCONN) == -1) {
         perror("listen");
         close(sock_fd);
         return (-1);
@@ -23,7 +23,7 @@ int listen_socket(int sock_fd)
 int bind_socket(int sock_fd, struct sockaddr_in *server_addr)
 {
     if (bind(sock_fd, (struct sockaddr *)server_addr, sizeof(*server_addr))
-    < 0) {
+    == -1) {
         perror("bind");
         close(sock_fd);
         return (-1);

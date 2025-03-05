@@ -26,10 +26,8 @@ int main(int ac, char **av)
     if (ac == 2 && strcmp(av[1], "-help") == 0)
         return (help());
     port = atoi(av[1]);
-    if (port <= 0) {
-        write(2, "Invalid port number\n", 20);
+    if (port <= 0)
         return (84);
-    }
     server_fd = create_server_socket(port);
     if (server_fd == -1)
         return (84);

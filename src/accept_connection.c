@@ -20,11 +20,15 @@ void cleanup_manager(poll_manager_t *manager)
 int resize_poll_fds(poll_manager_t *manager)
 {
     size_t new_capacity = manager->capacity + 1;
-    struct pollfd *new_fds = realloc(manager->fds, sizeof(struct pollfd) *
-    new_capacity);
+    struct pollfd *new_fds = NULL;
 
-    if (new_fds == NULL)
+    if (!manager)
         return (-1);
+    new_fds = realloc(manager->fds, sizeof(struct pollfd) * new_capacity);
+    if (new_fds == NULL) {
+        perror("realloc");
+        return (-1);
+    }
     manager->fds = new_fds;
     manager->capacity = new_capacity;
     return (0);

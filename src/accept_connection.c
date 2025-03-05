@@ -7,12 +7,10 @@
 
 #include "my.h"
 
-static volatile sig_atomic_t running = 1;
-
 void signal_handler(int signum)
 {
-    if (signum == SIGINT || signum == SIGTERM)
-        running = 0;
+    (void)signum;
+    exit(0);
 }
 
 void cleanup_and_notify(poll_manager_t *manager)
@@ -31,7 +29,7 @@ int accept_connection(int server_fd)
         return (-1);
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
-    while (running) {
+    while (1) {
         status = handle_poll_result(manager,
             poll(manager->fds, manager->nfds, -1), server_fd);
         if (status < 0)

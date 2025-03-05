@@ -20,6 +20,7 @@ int main(int ac, char **av)
 {
     int server_fd = 0;
     int port = 0;
+    int ret = 0;
 
     if (ac != 2)
         return (84);
@@ -31,8 +32,9 @@ int main(int ac, char **av)
     server_fd = create_server_socket(port);
     if (server_fd == -1)
         return (84);
-    while (1)
-        accept_connection(server_fd);
+    ret = accept_connection(server_fd);
     close(server_fd);
+    if (ret == -1)
+        return (84);
     return (0);
 }

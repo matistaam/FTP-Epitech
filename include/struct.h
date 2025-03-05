@@ -9,9 +9,18 @@
     #define STRUCT_H_
     #include "my.h"
     #include "unistd.h"
+    #include "stdbool.h"
+
+typedef struct client_s {
+    int fd;
+    char *username;
+    bool is_authenticated;
+    char *current_directory;
+} client_t;
 
 typedef struct poll_manager_s {
     struct pollfd *fds;
+    client_t *clients;
     size_t nfds;
     size_t capacity;
 } poll_manager_t;

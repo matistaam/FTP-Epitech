@@ -22,16 +22,21 @@ RM				=	rm -f
 all: $(NAME)
 
 $(NAME): $(OBJ_FILES)
-	$(CC) $(CFLAGS) $^ -o $@
+	@echo "Linking $(NAME)..."
+	@$(CC) $(CFLAGS) $^ -o $@
+	@echo "Done!"
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "Compiling $<"
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) $(OBJ_FILES)
+	@echo "Cleaning object files..."
+	@$(RM) $(OBJ_FILES)
 
 fclean: clean
-	$(RM) $(NAME)
+	@echo "Cleaning executable..."
+	@$(RM) $(NAME)
 
 re: fclean all
 

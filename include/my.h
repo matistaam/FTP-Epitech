@@ -12,17 +12,41 @@
     #include <arpa/inet.h>
     #include <poll.h>
     #include <sys/ioctl.h>
+    #include <signal.h>
+    #include <errno.h>
     #include <unistd.h>
     #include <stdio.h>
     #include <string.h>
     #include <stdlib.h>
 
+/* handle_commands */
+// File : handle_noop_command.c
+int handle_noop_command(client_t *client);
+
+// File : handle_pass_command.c
+int handle_pass_command(client_t *client, char *command);
+
+// File : handle_quit_command.c
+int handle_quit_command(client_t *client);
+
+// File : handle_user_command.c
+int handle_user_command(client_t *client, char *command);
+
+
+/* src */
 // File : accept_connection.c
-void cleanup_manager(poll_manager_t *manager);
-int resize_poll_fds(poll_manager_t *manager);
-int handle_poll_events(poll_manager_t *manager, int server_fd);
-poll_manager_t *init_poll_fds(int server_fd);
+void signal_handler(int signum);
+void cleanup_and_notify(poll_manager_t *manager);
 int accept_connection(int server_fd);
+
+// File : add_new_client.c
+void remove_client(poll_manager_t *manager, int index);
+void init_client_and_poll_struct(client_t *client, struct pollfd *poll_fd,
+    int client_fd);
+int add_new_client(poll_manager_t *manager, int server_fd);
+
+// File : cleanup_manager.c
+void cleanup_manager(poll_manager_t *manager);
 
 // File : create_server_socket.c
 int listen_socket(int sock_fd);
@@ -31,12 +55,25 @@ int create_socket(void);
 int create_server_socket(int port);
 
 // File : handle_client_data.c
+int check_available_data(poll_manager_t *manager, int index, int *available);
+char *read_client_data(poll_manager_t *manager, int index, int available,
+    int *nbytes);
 int handle_client_data(poll_manager_t *manager, int index);
-void remove_client(poll_manager_t *manager, int index);
-int add_new_client(poll_manager_t *manager, int server_fd);
+
+// File : handle_poll_events.c
+int resize_poll_fds(poll_manager_t *manager);
+int handle_events(poll_manager_t *manager, size_t i, int server_fd);
+int handle_poll_events(poll_manager_t *manager, int server_fd);
+int handle_poll_result(poll_manager_t *manager, int poll_count, int server_fd);
+poll_manager_t *init_poll_fds(int server_fd);
 
 // File : main.c
 int help(void);
 int main(int ac, char **av);
+
+// File : parse_ftp_command.c
+int check_authentication(client_t *client, const char *command);
+int execute_command(client_t *client, const char *command, char *args);
+int parse_ftp_command(client_t *client, char *buffer);
 
 #endif /* !MY_H_ */

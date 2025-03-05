@@ -25,7 +25,7 @@ int main(int ac, char **av)
     int server_fd = 0;
     int port = 0;
 
-    if (av == NULL || ac < 2)
+    if (ac != 2)
         return (84);
     if (ac == 2 && strcmp(av[1], "-help") == 0)
         return (help());

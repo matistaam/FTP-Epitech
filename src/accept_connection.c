@@ -6,38 +6,27 @@
 */
 
 #include "my.h"
-#include "struct.h"
-#include <arpa/inet.h>
-#include <poll.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 
-void remove_client(poll_manager_t *manager, int index)
+void cleanup_manager(poll_manager_t *manager)
 {
-    close(manager->fds[index].fd);
-    for (size_t i = index; i < manager->nfds - 1; i++)
-        manager->fds[i] = manager->fds[i + 1];
-    manager->nfds--;
+    if (!manager)
+        return;
+    for (size_t i = 1; i < manager->nfds; i++)
+        close(manager->fds[i].fd);
+    free(manager->fds);
+    free(manager);
 }
 
-int add_new_client(poll_manager_t *manager, int server_fd)
+int resize_poll_fds(poll_manager_t *manager)
 {
-    struct sockaddr_in client_addr;
-    socklen_t client_len = sizeof(client_addr);
-    int client_fd = 0;
+    size_t new_capacity = manager->capacity + 1;
+    struct pollfd *new_fds = realloc(manager->fds, sizeof(struct pollfd) *
+    new_capacity);
 
-    if (manager->nfds >= manager->capacity)
+    if (new_fds == NULL)
         return (-1);
-    client_fd = accept(server_fd, (struct sockaddr *)&client_addr,
-    &client_len);
-    if (client_fd == -1)
-        return (-1);
-    manager->fds[manager->nfds].fd = client_fd;
-    manager->fds[manager->nfds].events = POLLIN;
-    manager->nfds++;
-    printf("Connection from %s:%d\n",
-    inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+    manager->fds = new_fds;
+    manager->capacity = new_capacity;
     return (0);
 }
 
@@ -61,7 +50,7 @@ poll_manager_t *init_poll_fds(int server_fd)
     if (manager == NULL)
         return (NULL);
     manager->nfds = 1;
-    manager->capacity = 10;
+    manager->capacity = 1;
     manager->fds = malloc(sizeof(struct pollfd) * manager->capacity);
     if (manager->fds == NULL) {
         free(manager);
@@ -83,12 +72,12 @@ int accept_connection(int server_fd)
         poll_count = poll(manager->fds, manager->nfds, -1);
         if (poll_count == -1) {
             perror("poll");
-            free(manager->fds);
-            free(manager);
+            cleanup_manager(manager);
             return (-1);
         }
         if (handle_poll_events(manager, server_fd) == -1)
-            return (-1);
+            break;
     }
+    cleanup_manager(manager);
     return (0);
 }

@@ -7,7 +7,8 @@
 
 #ifndef STRUCT_H_
     #define STRUCT_H_
-    #include <unistd.h>
+    #include "my.h"
+    #include "unistd.h"
 
 typedef struct poll_manager_s {
     struct pollfd *fds;

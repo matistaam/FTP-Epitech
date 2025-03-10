@@ -16,7 +16,7 @@ void signal_handler(int signum)
 void cleanup_and_notify(poll_manager_t *manager)
 {
     for (size_t i = 1; i < manager->nfds; i++)
-    dprintf(manager->fds[i].fd, "221 Service closing.\r\n");
+    dprintf(manager->fds[i].fd, "Service closing control connection.\r\n");
     cleanup_manager(manager);
 }
 

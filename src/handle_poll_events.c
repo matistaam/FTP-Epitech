@@ -54,7 +54,7 @@ int handle_poll_result(poll_manager_t *manager, int poll_count, int server_fd)
 {
     if (poll_count == -1) {
         if (errno == EINTR)
-        return (1);
+            return (1);
         perror("poll");
         return (-1);
     }

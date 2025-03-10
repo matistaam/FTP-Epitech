@@ -28,8 +28,8 @@ int execute_command2(client_t *client, const char *command, char *args)
         return (handle_dele_command(client, args));
     if (strcasecmp(command, "PWD") == 0)
         return (handle_pwd_command(client));
-    // if (strcasecmp(command, "HELP") == 0)
-    //     return (handle_help_command(client));
+    if (strcasecmp(command, "HELP") == 0)
+        return (handle_help_command(client));
     if (strcasecmp(command, "NOOP") == 0)
         return (handle_noop_command(client));
     return (1);

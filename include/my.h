@@ -20,11 +20,20 @@
     #include <stdlib.h>
 
 /* handle_commands */
+// File : handle_cdup_command.c
+int handle_cdup_command(client_t *client);
+
+// File : handle_cwd_command.c
+int handle_cwd_command(client_t *client, char *path);
+
 // File : handle_noop_command.c
 int handle_noop_command(client_t *client);
 
 // File : handle_pass_command.c
 int handle_pass_command(client_t *client, char *command);
+
+// File : handle_pwd_command.c
+int handle_pwd_command(client_t *client);
 
 // File : handle_quit_command.c
 int handle_quit_command(client_t *client);

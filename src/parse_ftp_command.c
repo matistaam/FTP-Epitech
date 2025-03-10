@@ -26,6 +26,12 @@ int execute_command(client_t *client, const char *command, char *args)
         return (handle_quit_command(client));
     if (strcasecmp(command, "NOOP") == 0)
         return (handle_noop_command(client));
+    if (strcasecmp(command, "PWD") == 0)
+        return (handle_pwd_command(client));
+    if (strcasecmp(command, "CWD") == 0)
+        return (handle_cwd_command(client, args));
+    if (strcasecmp(command, "CDUP") == 0)
+        return (handle_cwd_command(client, ".."));
     dprintf(client->fd, "500 Unknown command.\r\n");
     return (0);
 }

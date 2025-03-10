@@ -69,6 +69,8 @@ poll_manager_t *init_poll_fds(int server_fd);
 
 // File : main.c
 int help(void);
+int run_server(int server_fd);
+int check_args(int ac, char **av, int *port);
 int main(int ac, char **av);
 
 // File : parse_ftp_command.c

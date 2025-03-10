@@ -16,23 +16,46 @@ int check_authentication(client_t *client, const char *command)
     return (0);
 }
 
+int execute_command2(client_t *client, const char *command, char *args)
+{
+    if (strcasecmp(command, "STOR") == 0)
+        return (handle_stor_command(client, args));
+    if (strcasecmp(command, "RETR") == 0)
+        return (handle_retr_command(client, args));
+    if (strcasecmp(command, "LIST") == 0)
+        return (handle_list_command(client, args));
+    if (strcasecmp(command, "DELE") == 0)
+        return (handle_dele_command(client, args));
+    if (strcasecmp(command, "PWD") == 0)
+        return (handle_pwd_command(client));
+    // if (strcasecmp(command, "HELP") == 0)
+    //     return (handle_help_command(client));
+    if (strcasecmp(command, "NOOP") == 0)
+        return (handle_noop_command(client));
+    return (1);
+}
+
 int execute_command(client_t *client, const char *command, char *args)
 {
+    int ret = 0;
+
     if (strcasecmp(command, "USER") == 0)
         return (handle_user_command(client, args));
     if (strcasecmp(command, "PASS") == 0)
         return (handle_pass_command(client, args));
-    if (strcasecmp(command, "QUIT") == 0)
-        return (handle_quit_command(client));
-    if (strcasecmp(command, "NOOP") == 0)
-        return (handle_noop_command(client));
-    if (strcasecmp(command, "PWD") == 0)
-        return (handle_pwd_command(client));
     if (strcasecmp(command, "CWD") == 0)
         return (handle_cwd_command(client, args));
     if (strcasecmp(command, "CDUP") == 0)
         return (handle_cwd_command(client, ".."));
-    dprintf(client->fd, "500 Unknown command.\r\n");
+    if (strcasecmp(command, "QUIT") == 0)
+        return (handle_quit_command(client));
+    if (strcasecmp(command, "PORT") == 0)
+        return (handle_port_command(client, args));
+    if (strcasecmp(command, "PASV") == 0)
+        return (handle_pasv_command(client));
+    ret = execute_command2(client, command, args);
+    if (ret == 1)
+        dprintf(client->fd, "500 Unknown command.\r\n");
     return (0);
 }
 

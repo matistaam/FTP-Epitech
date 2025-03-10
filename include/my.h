@@ -26,17 +26,38 @@ int handle_cdup_command(client_t *client);
 // File : handle_cwd_command.c
 int handle_cwd_command(client_t *client, char *path);
 
+// File : handle_dele_command.c
+int handle_dele_command(client_t *client, char *path);
+
+// File : handle_help_command.c
+int handle_help_command(client_t *client);
+
+// File : handle_list_command.c
+int handle_list_command(client_t *client, char *path);
+
 // File : handle_noop_command.c
 int handle_noop_command(client_t *client);
 
 // File : handle_pass_command.c
 int handle_pass_command(client_t *client, char *command);
 
+// File : handle_pasv_command.c
+int handle_pasv_command(client_t *client);
+
+// File : handle_port_command.c
+int handle_port_command(client_t *client, char *args);
+
 // File : handle_pwd_command.c
 int handle_pwd_command(client_t *client);
 
 // File : handle_quit_command.c
 int handle_quit_command(client_t *client);
+
+// File : handle_retr_command.c
+int handle_retr_command(client_t *client, char *path);
+
+// File : handle_stor_command.c
+int handle_stor_command(client_t *client, char *path);
 
 // File : handle_user_command.c
 int handle_user_command(client_t *client, char *command);
@@ -84,6 +105,7 @@ int main(int ac, char **av);
 
 // File : parse_ftp_command.c
 int check_authentication(client_t *client, const char *command);
+int execute_command2(client_t *client, const char *command, char *args);
 int execute_command(client_t *client, const char *command, char *args);
 int parse_ftp_command(client_t *client, char *buffer);
 

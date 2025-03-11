@@ -7,15 +7,6 @@
 
 #include "my.h"
 
-int check_authentication(client_t *client, const char *command)
-{
-    if (client->is_authenticated || strcasecmp(command, "USER") == 0 ||
-        strcasecmp(command, "PASS") == 0 || strcasecmp(command, "QUIT") == 0)
-        return (1);
-    dprintf(client->fd, "530 Please login with USER and PASS.\r\n");
-    return (0);
-}
-
 int execute_command2(client_t *client, const char *command, char *args)
 {
     if (strcasecmp(command, "STOR") == 0)
@@ -59,6 +50,15 @@ int execute_command(client_t *client, const char *command, char *args)
     return (0);
 }
 
+int check_authentication(client_t *client, const char *command)
+{
+    if (client->is_authenticated || strcasecmp(command, "USER") == 0 ||
+        strcasecmp(command, "PASS") == 0 || strcasecmp(command, "QUIT") == 0)
+        return (1);
+    dprintf(client->fd, "530 Please login with USER and PASS.\r\n");
+    return (0);
+}
+
 int parse_ftp_command(client_t *client, char *buffer)
 {
     char *args = NULL;
@@ -73,7 +73,7 @@ int parse_ftp_command(client_t *client, char *buffer)
         *args = '\0';
         args++;
     }
-    if (check_authentication(client, command))
+    if (check_authentication(client, command) == 1)
         ret = execute_command(client, command, args);
     free(command);
     return (ret);

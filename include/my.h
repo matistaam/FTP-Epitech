@@ -8,16 +8,19 @@
 #ifndef MY_H_
     #define MY_H_
     #include "struct.h"
+    #include <unistd.h>
+    #include <stdio.h>
+    #include <string.h>
+    #include <stdlib.h>
     #include <netinet/in.h>
     #include <arpa/inet.h>
     #include <poll.h>
     #include <sys/ioctl.h>
     #include <signal.h>
     #include <errno.h>
-    #include <unistd.h>
-    #include <stdio.h>
-    #include <string.h>
-    #include <stdlib.h>
+    #include <dirent.h>
+    #include <sys/stat.h>
+    #include <time.h>
 
 /* handle_commands */
 // File : handle_cdup_command.c
@@ -33,6 +36,7 @@ int handle_dele_command(client_t *client, char *path);
 int handle_help_command(client_t *client);
 
 // File : handle_list_command.c
+void send_file_info(int fd, const char *filename, struct stat *st);
 int handle_list_command(client_t *client, char *path);
 
 // File : handle_noop_command.c
@@ -42,6 +46,8 @@ int handle_noop_command(client_t *client);
 int handle_pass_command(client_t *client, char *command);
 
 // File : handle_pasv_command.c
+int accept_pasv_connection(client_t *client, int pasv_sock);
+int create_pasv_socket(void);
 int handle_pasv_command(client_t *client);
 
 // File : handle_port_command.c
@@ -66,16 +72,17 @@ int handle_user_command(client_t *client, char *command);
 /* src */
 // File : accept_connection.c
 void signal_handler(int signum);
-void cleanup_and_notify(poll_manager_t *manager);
-int accept_connection(int server_fd);
+int accept_connection(poll_manager_t *manager);
 
 // File : add_new_client.c
-void remove_client(poll_manager_t *manager, int index);
 void init_client_and_poll_struct(client_t *client, struct pollfd *poll_fd,
-    int client_fd);
+    int client_fd, poll_manager_t *manager);
+int resize_poll_fds(poll_manager_t *manager);
 int add_new_client(poll_manager_t *manager, int server_fd);
 
 // File : cleanup_manager.c
+void cleanup_client(client_t *client);
+void cleanup_all_clients(poll_manager_t *manager);
 void cleanup_manager(poll_manager_t *manager);
 
 // File : create_server_socket.c
@@ -85,28 +92,28 @@ int create_socket(void);
 int create_server_socket(int port);
 
 // File : handle_client_data.c
-int check_available_data(poll_manager_t *manager, int index, int *available);
+void remove_client(poll_manager_t *manager, int index);
 char *read_client_data(poll_manager_t *manager, int index, int available,
     int *nbytes);
+int check_available_data(poll_manager_t *manager, int index, int *available);
 int handle_client_data(poll_manager_t *manager, int index);
 
 // File : handle_poll_events.c
-int resize_poll_fds(poll_manager_t *manager);
 int handle_events(poll_manager_t *manager, size_t i, int server_fd);
 int handle_poll_events(poll_manager_t *manager, int server_fd);
 int handle_poll_result(poll_manager_t *manager, int poll_count, int server_fd);
-poll_manager_t *init_poll_fds(int server_fd);
+poll_manager_t *init_poll_fds(int server_fd, const char *root_path);
 
 // File : main.c
 int help(void);
-int run_server(int server_fd);
 int check_args(int ac, char **av, int *port);
+int handle_server(poll_manager_t *manager, int server_fd);
 int main(int ac, char **av);
 
 // File : parse_ftp_command.c
-int check_authentication(client_t *client, const char *command);
 int execute_command2(client_t *client, const char *command, char *args);
 int execute_command(client_t *client, const char *command, char *args);
+int check_authentication(client_t *client, const char *command);
 int parse_ftp_command(client_t *client, char *buffer);
 
 #endif /* !MY_H_ */

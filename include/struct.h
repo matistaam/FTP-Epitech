@@ -13,6 +13,7 @@
 
 typedef struct client_s {
     int fd;
+    int data_fd;
     char *username;
     bool is_authenticated;
     char *current_directory;
@@ -23,6 +24,7 @@ typedef struct poll_manager_s {
     client_t *clients;
     size_t nfds;
     size_t capacity;
+    char *root_path;
 } poll_manager_t;
 
 #endif /* !STRUCT_H_ */

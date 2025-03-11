@@ -12,22 +12,16 @@
 
 int listen_socket(int sock_fd)
 {
-    if (listen(sock_fd, SOMAXCONN) == -1) {
-        perror("listen");
-        close(sock_fd);
+    if (listen(sock_fd, SOMAXCONN) == -1)
         return (-1);
-    }
     return (0);
 }
 
 int bind_socket(int sock_fd, struct sockaddr_in *server_addr)
 {
     if (bind(sock_fd, (struct sockaddr *)server_addr, sizeof(*server_addr))
-    == -1) {
-        perror("bind");
-        close(sock_fd);
+    == -1)
         return (-1);
-    }
     return (0);
 }
 
@@ -35,11 +29,8 @@ int create_socket(void)
 {
     int sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
-    if (sock_fd == -1) {
-        perror("socket");
-        close(sock_fd);
+    if (sock_fd == -1)
         return (-1);
-    }
     return (sock_fd);
 }
 

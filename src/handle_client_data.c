@@ -7,18 +7,16 @@
 
 #include "my.h"
 
-int check_available_data(poll_manager_t *manager, int index, int *available)
+void remove_client(poll_manager_t *manager, int index)
 {
-    if (ioctl(manager->fds[index].fd, FIONREAD, available) == -1) {
-        perror("ioctl");
-        remove_client(manager, index);
-        return (-1);
+    printf("Client disconnected (fd: %d)\n", manager->fds[index].fd);
+    close(manager->fds[index].fd);
+    cleanup_client(&manager->clients[index]);
+    for (size_t i = index; i < manager->nfds - 1; i++) {
+        manager->fds[i] = manager->fds[i + 1];
+        manager->clients[i] = manager->clients[i + 1];
     }
-    if (*available <= 0) {
-        remove_client(manager, index);
-        return (-1);
-    }
-    return (0);
+    manager->nfds--;
 }
 
 char *read_client_data(poll_manager_t *manager, int index, int available,
@@ -38,12 +36,25 @@ char *read_client_data(poll_manager_t *manager, int index, int available,
     return (buffer);
 }
 
+int check_available_data(poll_manager_t *manager, int index, int *available)
+{
+    if (ioctl(manager->fds[index].fd, FIONREAD, available) == -1) {
+        remove_client(manager, index);
+        return (-1);
+    }
+    if (*available <= 0) {
+        remove_client(manager, index);
+        return (-1);
+    }
+    return (0);
+}
+
 int handle_client_data(poll_manager_t *manager, int index)
 {
     int available = 0;
     int nbytes = 0;
-    char *buffer = NULL;
     int ret = 0;
+    char *buffer = NULL;
 
     if (check_available_data(manager, index, &available) == -1)
         return (-1);

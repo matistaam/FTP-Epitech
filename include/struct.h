@@ -17,6 +17,7 @@ typedef struct client_s {
     char *username;
     bool is_authenticated;
     char *current_directory;
+    char *previous_directory;
 } client_t;
 
 typedef struct poll_manager_s {

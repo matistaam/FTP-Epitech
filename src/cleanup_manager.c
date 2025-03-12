@@ -15,6 +15,8 @@ void cleanup_client(client_t *client)
         free(client->username);
     if (client->current_directory != NULL)
         free(client->current_directory);
+    if (client->previous_directory != NULL)
+        free(client->previous_directory);
     if (client->data_fd > 0)
         close(client->data_fd);
 }

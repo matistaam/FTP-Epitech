@@ -13,10 +13,6 @@ int handle_dele_command(client_t *client, char *path)
         dprintf(client->fd, "501 Syntax error in parameters.\r\n");
         return (0);
     }
-    if (access(path, F_OK | W_OK) == -1) {
-        dprintf(client->fd, "550 Failed to delete file.\r\n");
-        return (0);
-    }
     if (remove(path) == -1) {
         dprintf(client->fd, "550 Failed to delete file.\r\n");
         return (0);

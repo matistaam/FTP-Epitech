@@ -15,6 +15,7 @@ void init_client_and_poll_struct(client_t *client, struct pollfd *poll_fd,
     client->username = NULL;
     client->is_authenticated = false;
     client->current_directory = strdup(manager->root_path);
+    client->previous_directory = strdup(manager->root_path);
     poll_fd->fd = client_fd;
     poll_fd->events = POLLIN;
     poll_fd->revents = 0;

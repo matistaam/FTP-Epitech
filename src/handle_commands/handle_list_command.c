@@ -75,7 +75,7 @@ int handle_list_command(client_t *client, char *path)
         return (0);
     dir = opendir(target_path);
     if (dir == NULL) {
-        dprintf(client->fd, "550 Failed to open directory.\r\n");
+        dprintf(client->fd, "250 Failed to open directory.\r\n");
         if (path != NULL && target_path != client->current_directory)
             free(target_path);
         return (0);

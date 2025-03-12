@@ -26,8 +26,21 @@
 // File : handle_cdup_command.c
 int handle_cdup_command(client_t *client);
 
-// File : handle_cwd_command.c
-int handle_cwd_command(client_t *client, char *path);
+// File : handle_cwd_commands/handle_cwd_command.c
+int update_directories(client_t *client, char *new_path);
+int handle_path_resolution(client_t *client, char *temp_path, char **new_path,
+    poll_manager_t *manager);
+char *build_path(const char *current_dir, const char *new_path,
+    poll_manager_t *manager);
+int handle_directory_change(client_t *client, char *path,
+    poll_manager_t *manager);
+int handle_cwd_command(client_t *client, char *path, poll_manager_t *manager);
+
+// File : handle_cwd_commands/handle_cwd_command2.c
+int is_path_allowed(const char *root, const char *path);
+char *resolve_directory_path(char *path);
+int check_directory_access(const char *path, int client_fd);
+int handle_previous_directory(client_t *client);
 
 // File : handle_dele_command.c
 int handle_dele_command(client_t *client, char *path);
@@ -112,8 +125,9 @@ int main(int ac, char **av);
 
 // File : parse_ftp_command.c
 int execute_command2(client_t *client, const char *command, char *args);
-int execute_command(client_t *client, const char *command, char *args);
+int execute_command(client_t *client, const char *command, char *args,
+    poll_manager_t *manager);
 int check_authentication(client_t *client, const char *command);
-int parse_ftp_command(client_t *client, char *buffer);
+int parse_ftp_command(client_t *client, char *buffer, poll_manager_t *manager);
 
 #endif /* !MY_H_ */

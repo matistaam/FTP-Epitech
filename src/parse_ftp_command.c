@@ -26,7 +26,8 @@ int execute_command2(client_t *client, const char *command, char *args)
     return (1);
 }
 
-int execute_command(client_t *client, const char *command, char *args)
+int execute_command(client_t *client, const char *command, char *args,
+    poll_manager_t *manager)
 {
     int ret = 0;
 
@@ -35,9 +36,9 @@ int execute_command(client_t *client, const char *command, char *args)
     if (strcasecmp(command, "PASS") == 0)
         return (handle_pass_command(client, args));
     if (strcasecmp(command, "CWD") == 0)
-        return (handle_cwd_command(client, args));
+        return (handle_cwd_command(client, args, manager));
     if (strcasecmp(command, "CDUP") == 0)
-        return (handle_cwd_command(client, ".."));
+        return (handle_cdup_command(client));
     if (strcasecmp(command, "QUIT") == 0)
         return (handle_quit_command(client));
     if (strcasecmp(command, "PORT") == 0)
@@ -59,7 +60,7 @@ int check_authentication(client_t *client, const char *command)
     return (0);
 }
 
-int parse_ftp_command(client_t *client, char *buffer)
+int parse_ftp_command(client_t *client, char *buffer, poll_manager_t *manager)
 {
     char *args = NULL;
     char *command = strdup(buffer);
@@ -74,7 +75,7 @@ int parse_ftp_command(client_t *client, char *buffer)
         args++;
     }
     if (check_authentication(client, command) == 1)
-        ret = execute_command(client, command, args);
+        ret = execute_command(client, command, args, manager);
     free(command);
     return (ret);
 }

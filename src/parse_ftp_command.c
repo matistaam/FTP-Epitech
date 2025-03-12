@@ -38,7 +38,7 @@ int execute_command(client_t *client, const char *command, char *args,
     if (strcasecmp(command, "CWD") == 0)
         return (handle_cwd_command(client, args, manager));
     if (strcasecmp(command, "CDUP") == 0)
-        return (handle_cdup_command(client));
+        return (handle_cdup_command(client, args, manager));
     if (strcasecmp(command, "QUIT") == 0)
         return (handle_quit_command(client));
     if (strcasecmp(command, "PORT") == 0)

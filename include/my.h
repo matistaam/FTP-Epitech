@@ -24,7 +24,9 @@
 
 /* handle_commands */
 // File : handle_cdup_command.c
-int handle_cdup_command(client_t *client);
+int check_cdup_args(client_t *client, char *path);
+int is_root_directory(client_t *client, poll_manager_t *manager);
+int handle_cdup_command(client_t *client, char *path, poll_manager_t *manager);
 
 // File : handle_cwd_commands/handle_cwd_command.c
 int update_directories(client_t *client, char *new_path);

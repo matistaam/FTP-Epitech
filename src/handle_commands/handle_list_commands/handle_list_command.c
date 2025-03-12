@@ -48,28 +48,33 @@ int check_data_connection(client_t *client)
     return (1);
 }
 
-char *get_target_path(client_t *client, char *path)
+char *get_target_path(client_t *client, char *path, poll_manager_t *manager)
 {
     char *target_path;
+    char *base_path;
+    char *resolved_path;
 
-    if (path != NULL) {
-        if (path[0] == '/') {
-            return (path);
-        }
-        target_path = malloc(strlen(client->current_directory) + strlen(path)
-        + 2);
-        if (target_path == NULL)
-            return (client->current_directory);
-        sprintf(target_path, "%s/%s", client->current_directory, path);
-        return (target_path);
+    base_path = get_base_path(client, path, manager);
+    if (path == NULL)
+        return (base_path);
+    target_path = malloc(strlen(base_path) + strlen(path) + 2);
+    if (target_path == NULL)
+        return (strdup(client->current_directory));
+    sprintf(target_path, "%s/%s", base_path, path);
+    resolved_path = realpath(target_path, NULL);
+    free(target_path);
+    if (!resolved_path ||
+    !is_path_allowed(manager->root_path, resolved_path)) {
+        free(resolved_path);
+        return (strdup(client->current_directory));
     }
-    return (client->current_directory);
+    return (resolved_path);
 }
 
-int handle_list_command(client_t *client, char *path)
+int handle_list_command(client_t *client, char *path, poll_manager_t *manager)
 {
     DIR *dir;
-    char *target_path = get_target_path(client, path);
+    char *target_path = get_target_path(client, path, manager);
 
     if (!check_data_connection(client))
         return (0);

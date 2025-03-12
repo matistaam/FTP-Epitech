@@ -50,9 +50,16 @@ int handle_dele_command(client_t *client, char *path);
 // File : handle_help_command.c
 int handle_help_command(client_t *client);
 
-// File : handle_list_command.c
-void send_file_info(int fd, const char *filename, struct stat *st);
-int handle_list_command(client_t *client, char *path);
+// File : handle_list_commands/handle_list_command.c
+void cleanup_and_close(client_t *client, DIR *dir, char *target_path,
+    char *path);
+void list_directory_content(int data_fd, DIR *dir, const char *base_path);
+int check_data_connection(client_t *client);
+char *get_target_path(client_t *client, char *path, poll_manager_t *manager);
+int handle_list_command(client_t *client, char *path, poll_manager_t *manager);
+
+// File : handle_list_commands/handle_list_command2.c
+char *get_base_path(client_t *client, char *path, poll_manager_t *manager);
 
 // File : handle_noop_command.c
 int handle_noop_command(client_t *client);
@@ -126,7 +133,8 @@ int handle_server(poll_manager_t *manager, int server_fd);
 int main(int ac, char **av);
 
 // File : parse_ftp_command.c
-int execute_command2(client_t *client, const char *command, char *args);
+int execute_command2(client_t *client, const char *command, char *args,
+    poll_manager_t *manager);
 int execute_command(client_t *client, const char *command, char *args,
     poll_manager_t *manager);
 int check_authentication(client_t *client, const char *command);

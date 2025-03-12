@@ -7,14 +7,15 @@
 
 #include "my.h"
 
-int execute_command2(client_t *client, const char *command, char *args)
+int execute_command2(client_t *client, const char *command, char *args,
+    poll_manager_t *manager)
 {
     if (strcasecmp(command, "STOR") == 0)
         return (handle_stor_command(client, args));
     if (strcasecmp(command, "RETR") == 0)
         return (handle_retr_command(client, args));
     if (strcasecmp(command, "LIST") == 0)
-        return (handle_list_command(client, args));
+        return (handle_list_command(client, args, manager));
     if (strcasecmp(command, "DELE") == 0)
         return (handle_dele_command(client, args));
     if (strcasecmp(command, "PWD") == 0)
@@ -45,7 +46,7 @@ int execute_command(client_t *client, const char *command, char *args,
         return (handle_port_command(client, args));
     if (strcasecmp(command, "PASV") == 0)
         return (handle_pasv_command(client));
-    ret = execute_command2(client, command, args);
+    ret = execute_command2(client, command, args, manager);
     if (ret == 1)
         dprintf(client->fd, "500 Unknown command.\r\n");
     return (0);

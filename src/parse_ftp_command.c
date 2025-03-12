@@ -19,7 +19,7 @@ int execute_command2(client_t *client, const char *command, char *args,
     if (strcasecmp(command, "DELE") == 0)
         return (handle_dele_command(client, args));
     if (strcasecmp(command, "PWD") == 0)
-        return (handle_pwd_command(client));
+        return (handle_pwd_command(client, manager));
     if (strcasecmp(command, "HELP") == 0)
         return (handle_help_command(client));
     if (strcasecmp(command, "NOOP") == 0)

@@ -76,7 +76,8 @@ int handle_pasv_command(client_t *client);
 int handle_port_command(client_t *client, char *args);
 
 // File : handle_pwd_command.c
-int handle_pwd_command(client_t *client);
+char *get_relative_path(const char *root, const char *current);
+int handle_pwd_command(client_t *client, poll_manager_t *manager);
 
 // File : handle_quit_command.c
 int handle_quit_command(client_t *client);

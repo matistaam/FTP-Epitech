@@ -73,6 +73,10 @@ int create_pasv_socket(void);
 int handle_pasv_command(client_t *client);
 
 // File : handle_port_command.c
+int create_data_socket(client_t *client, struct sockaddr_in *addr);
+void configure_addr(struct sockaddr_in *addr, int *values);
+int parse_values(char *str, int *values);
+int parse_port_args(const char *args, struct sockaddr_in *addr);
 int handle_port_command(client_t *client, char *args);
 
 // File : handle_pwd_command.c

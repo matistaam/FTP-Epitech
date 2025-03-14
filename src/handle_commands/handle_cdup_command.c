@@ -7,54 +7,23 @@
 
 #include "my.h"
 
-int check_cdup_args(client_t *client, char *path)
+int handle_cdup_command(poll_manager_t *manager, client_t *client)
 {
-    if (path != NULL) {
-        dprintf(client->fd, "501 CDUP does not accept arguments.\r\n");
-        return (0);
-    }
-    if (client->current_directory == NULL) {
-        dprintf(client->fd, "550 No current directory set.\r\n");
-        return (0);
-    }
-    return (1);
-}
+    char *new_path = NULL;
+    struct stat st = {0};
 
-int is_root_directory(client_t *client, poll_manager_t *manager)
-{
-    char *realpath_current = realpath(client->current_directory, NULL);
-    char *realpath_root = realpath(manager->root_path, NULL);
-    int is_root = 0;
-
-    if (!realpath_current || !realpath_root) {
-        free(realpath_current);
-        free(realpath_root);
-        dprintf(client->fd, "550 Failed to resolve path.\r\n");
-        return (-1);
-    }
-    is_root = (strcmp(realpath_current, realpath_root) == 0);
-    free(realpath_current);
-    free(realpath_root);
-    if (is_root) {
-        dprintf(client->fd, "550 Already at root directory.\r\n");
+    new_path = get_path(manager, client, "..");
+    if (new_path == NULL) {
+        dprintf(client->fd, "550 Failed to access parent directory.\r\n");
         return (1);
     }
-    return (0);
-}
-
-int handle_cdup_command(client_t *client, char *path, poll_manager_t *manager)
-{
-    int root_check;
-    int success;
-
-    if (!check_cdup_args(client, path))
-        return (0);
-    root_check = is_root_directory(client, manager);
-    if (root_check != 0)
-        return (0);
-    success = handle_directory_change(client, "..", manager);
-    if (!success)
-        return (0);
-    dprintf(client->fd, "200 Directory successfully changed.\r\n");
+    if (stat(new_path, &st) == -1 || !S_ISDIR(st.st_mode) ||
+        access(new_path, R_OK | X_OK) == -1) {
+        dprintf(client->fd, "550 Failed to access directory.\r\n");
+        free(new_path);
+        return (1);
+    }
+    if (update_directories(client, new_path) == 0)
+        dprintf(client->fd, "200 Directory successfully changed.\r\n");
     return (0);
 }

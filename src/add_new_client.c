@@ -7,15 +7,15 @@
 
 #include "my.h"
 
-void init_client_and_poll_struct(client_t *client, struct pollfd *poll_fd,
-    int client_fd, poll_manager_t *manager)
+void init_client_and_poll_struct(poll_manager_t *manager, client_t *client,
+    struct pollfd *poll_fd, int client_fd)
 {
     client->fd = client_fd;
     client->data_fd = -1;
     client->username = NULL;
     client->is_authenticated = false;
     client->current_directory = strdup(manager->root_path);
-    client->previous_directory = strdup(manager->root_path);
+    client->previous_directory = NULL;
     poll_fd->fd = client_fd;
     poll_fd->events = POLLIN;
     poll_fd->revents = 0;
@@ -52,8 +52,8 @@ int add_new_client(poll_manager_t *manager, int server_fd)
     &client_len);
     if (client_fd == -1)
         return (-1);
-    init_client_and_poll_struct(&manager->clients[manager->nfds],
-    &manager->fds[manager->nfds], client_fd, manager);
+    init_client_and_poll_struct(manager, &manager->clients[manager->nfds],
+    &manager->fds[manager->nfds], client_fd);
     manager->nfds++;
     printf("Connection from %s:%d\n", inet_ntoa(client_addr.sin_addr),
     ntohs(client_addr.sin_port));

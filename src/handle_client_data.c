@@ -61,7 +61,7 @@ int handle_client_data(poll_manager_t *manager, int index)
     buffer = read_client_data(manager, index, available, &nbytes);
     if (buffer == NULL)
         return (-1);
-    ret = parse_ftp_command(&manager->clients[index], buffer, manager);
+    ret = parse_ftp_command(manager, &manager->clients[index], buffer);
     free(buffer);
     if (ret == -1)
         remove_client(manager, index);

@@ -99,6 +99,8 @@ int handle_pwd_command(client_t *client, poll_manager_t *manager);
 int handle_quit_command(client_t *client);
 
 // File : handle_stor_command.c
+int receive_file_content(client_t *client, FILE *file);
+int check_and_create_file(client_t *client, char *path, FILE **file);
 int handle_stor_command(client_t *client, char *path);
 
 // File : handle_user_command.c

@@ -7,6 +7,7 @@
 
 #ifndef MY_H_
     #define MY_H_
+    #define BUFFER_SIZE 4096
     #include "struct.h"
     #include <unistd.h>
     #include <stdio.h>
@@ -82,6 +83,9 @@ int handle_pwd_command(poll_manager_t *manager, client_t *client);
 int handle_quit_command(client_t *client);
 
 // File : handle_stor_command.c
+int write_data_to_file(client_t *client, FILE *file, char *buffer,
+    ssize_t bytes_read);
+int read_and_write_loop(client_t *client, FILE *file, char *buffer);
 int receive_file_content(client_t *client, FILE *file);
 int check_and_create_file(client_t *client, FILE **file, char *path);
 int handle_stor_command(poll_manager_t *manager, client_t *client, char *path);

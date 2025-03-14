@@ -7,7 +7,7 @@
 
 #include "my.h"
 
-void cleanup_transfer(char *buffer, FILE *file, client_t *client)
+void cleanup_transfer(client_t *client, FILE *file, char *buffer)
 {
     free(buffer);
     fclose(file);

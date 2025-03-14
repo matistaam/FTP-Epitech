@@ -52,10 +52,6 @@ int receive_file_content(client_t *client, FILE *file)
 
 int check_and_create_file(client_t *client, FILE **file, char *path)
 {
-    if (path == NULL || check_data_connection(client) == 1) {
-        dprintf(client->fd, "501 Syntax error in parameters.\r\n");
-        return (1);
-    }
     *file = fopen(path, "wb");
     if (*file == NULL) {
         dprintf(client->fd, "550 Failed to create file.\r\n");
@@ -64,7 +60,7 @@ int check_and_create_file(client_t *client, FILE **file, char *path)
     return (0);
 }
 
-int handle_stor_command(poll_manager_t *manager, client_t *client, char *path)
+int handle_stor_command(client_t *client, char *path)
 {
     FILE *file = NULL;
     char *full_path = NULL;
@@ -73,8 +69,7 @@ int handle_stor_command(poll_manager_t *manager, client_t *client, char *path)
         dprintf(client->fd, "501 Syntax error in parameters.\r\n");
         return (1);
     }
-    full_path = get_path(manager, client, path);
-    if (full_path == NULL) {
+    if (build_file_path(&full_path, client->current_directory, path) == 1) {
         dprintf(client->fd, "551 Requested action aborted.\r\n");
         return (1);
     }

@@ -37,10 +37,6 @@ int send_file_content(client_t *client, FILE *file, size_t file_size)
 int check_and_open_file(client_t *client, struct stat *st, FILE **file,
     char *path)
 {
-    if (path == NULL || check_data_connection(client) == 1) {
-        dprintf(client->fd, "501 Syntax error in parameters.\r\n");
-        return (1);
-    }
     *file = fopen(path, "rb");
     if (stat(path, st) == -1 || *file == NULL) {
         dprintf(client->fd, "550 Failed to open file.\r\n");

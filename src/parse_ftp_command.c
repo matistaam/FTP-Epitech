@@ -11,7 +11,7 @@ int execute_command2(poll_manager_t *manager, client_t *client,
     const char *command, char *args)
 {
     if (strcasecmp(command, "STOR") == 0)
-        return (handle_stor_command(manager, client, args));
+        return (handle_stor_command(client, args));
     if (strcasecmp(command, "RETR") == 0)
         return (handle_retr_command(manager, client, args));
     if (strcasecmp(command, "LIST") == 0)

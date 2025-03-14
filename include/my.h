@@ -31,6 +31,18 @@ int check_and_open_file(client_t *client, struct stat *st, FILE **file,
     char *path);
 int handle_retr_command(poll_manager_t *manager, client_t *client, char *path);
 
+// File : handle_stor_commands/handle_stor_command.c
+int write_data_to_file(client_t *client, FILE *file, char *buffer,
+    ssize_t bytes_read);
+int read_and_write_loop(client_t *client, FILE *file, char *buffer);
+int receive_file_content(client_t *client, FILE *file);
+int check_and_create_file(client_t *client, FILE **file, char *path);
+int handle_stor_command(client_t *client, char *path);
+
+// File : handle_stor_commands/handle_stor_command2.c
+int build_file_path(char **full_path, const char *current_dir,
+    const char *filename);
+
 // File : handle_retr_commands/handle_retr_command2.c
 void cleanup_transfer(client_t *client, FILE *file, char *buffer);
 
@@ -81,14 +93,6 @@ int handle_pwd_command(poll_manager_t *manager, client_t *client);
 
 // File : handle_quit_command.c
 int handle_quit_command(client_t *client);
-
-// File : handle_stor_command.c
-int write_data_to_file(client_t *client, FILE *file, char *buffer,
-    ssize_t bytes_read);
-int read_and_write_loop(client_t *client, FILE *file, char *buffer);
-int receive_file_content(client_t *client, FILE *file);
-int check_and_create_file(client_t *client, FILE **file, char *path);
-int handle_stor_command(poll_manager_t *manager, client_t *client, char *path);
 
 // File : handle_user_command.c
 int handle_user_command(client_t *client, char *command);

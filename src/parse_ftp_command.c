@@ -17,7 +17,7 @@ int execute_command2(poll_manager_t *manager, client_t *client,
     if (strcasecmp(command, "LIST") == 0)
         return (handle_list_command(manager, client, args));
     if (strcasecmp(command, "DELE") == 0)
-        return (handle_dele_command(client, args));
+        return (handle_dele_command(manager, client, args));
     if (strcasecmp(command, "PWD") == 0)
         return (handle_pwd_command(manager, client));
     if (strcasecmp(command, "HELP") == 0)

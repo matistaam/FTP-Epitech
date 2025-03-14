@@ -57,7 +57,7 @@ int handle_previous_directory(client_t *client);
 int handle_cwd_command(poll_manager_t *manager, client_t *client, char *path);
 
 // File : handle_dele_command.c
-int handle_dele_command(client_t *client, char *path);
+int handle_dele_command(poll_manager_t *manager, client_t *client, char *path);
 
 // File : handle_help_command.c
 int handle_help_command(client_t *client);

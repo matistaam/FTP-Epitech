@@ -23,11 +23,6 @@
     #include <time.h>
 
 /* handle_commands */
-// File : handle_cdup_command.c
-int check_cdup_args(client_t *client, char *path);
-int is_root_directory(client_t *client, poll_manager_t *manager);
-int handle_cdup_command(client_t *client, char *path, poll_manager_t *manager);
-
 // File : handle_cwd_commands/handle_cwd_command.c
 int update_directories(client_t *client, char *new_path);
 int handle_path_resolution(client_t *client, char *temp_path, char **new_path,
@@ -44,12 +39,6 @@ char *resolve_directory_path(char *path);
 int check_directory_access(const char *path, int client_fd);
 int handle_previous_directory(client_t *client);
 
-// File : handle_dele_command.c
-int handle_dele_command(client_t *client, char *path);
-
-// File : handle_help_command.c
-int handle_help_command(client_t *client);
-
 // File : handle_list_commands/handle_list_command.c
 void cleanup_and_close(client_t *client, DIR *dir, char *target_path,
     char *path);
@@ -60,6 +49,29 @@ int handle_list_command(client_t *client, char *path, poll_manager_t *manager);
 
 // File : handle_list_commands/handle_list_command2.c
 char *get_base_path(client_t *client, char *path, poll_manager_t *manager);
+
+// File : handle_retr_commands/handle_retr_command.c
+int allocate_buffer(client_t *client, char **buffer, size_t size,
+    FILE *file);
+int send_file_content(client_t *client, FILE *file, size_t file_size);
+int check_and_open_file(client_t *client, char *path, FILE **file,
+    struct stat *st);
+char *build_full_path(client_t *client, const char *path);
+int handle_retr_command(client_t *client, char *path);
+
+// File : handle_retr_commands/handle_retr_command2.c
+void cleanup_transfer(char *buffer, FILE *file, client_t *client);
+
+// File : handle_cdup_command.c
+int check_cdup_args(client_t *client, char *path);
+int is_root_directory(client_t *client, poll_manager_t *manager);
+int handle_cdup_command(client_t *client, char *path, poll_manager_t *manager);
+
+// File : handle_dele_command.c
+int handle_dele_command(client_t *client, char *path);
+
+// File : handle_help_command.c
+int handle_help_command(client_t *client);
 
 // File : handle_noop_command.c
 int handle_noop_command(client_t *client);
@@ -85,9 +97,6 @@ int handle_pwd_command(client_t *client, poll_manager_t *manager);
 
 // File : handle_quit_command.c
 int handle_quit_command(client_t *client);
-
-// File : handle_retr_command.c
-int handle_retr_command(client_t *client, char *path);
 
 // File : handle_stor_command.c
 int handle_stor_command(client_t *client, char *path);

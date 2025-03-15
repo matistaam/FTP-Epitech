@@ -25,7 +25,8 @@ int send_file_content(client_t *client, FILE *file, size_t file_size)
 
     if (allocate_buffer(client, file, &buffer, file_size) == 1)
         return (1);
-    dprintf(client->fd, "150 Opening data connection.\r\n");
+    dprintf(client->fd,
+    "150 File status okay; about to open data connection.\r\n");
     bytes = fread(buffer, 1, file_size, file);
     if (bytes > 0)
         write(client->data_fd, buffer, bytes);
